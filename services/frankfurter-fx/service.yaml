@@ -1,0 +1,55 @@
+schema: 1
+name: frankfurter-fx
+display_name: Frankfurter FX Rates
+description: >-
+  Foreign-exchange reference rates from the European Central Bank via the free
+  Frankfurter API: latest rates, historical rates for a given day, and a time
+  series across a date range. Priced per call in USDC.e on the Kite chain.
+maintainer:
+  github: hankgrimm
+status: live
+base_url: https://frankfurter-fx-losy.onrender.com
+network: eip155:2366
+pay_to: "0x60B9d2ef6D045CDEfa49D82115fA2BA4Ac949022"   # quote it: bare 0x... parses as a YAML integer
+upstream:
+  name: Frankfurter
+  url: https://api.frankfurter.dev
+  requires_api_key: false
+  terms_url: https://frankfurter.dev
+source: typescript-express
+endpoints:
+  - method: GET
+    path: /v1/latest
+    summary: Latest ECB reference rates; proxies Frankfurter /v1/latest.
+    price_usd: "0.001"
+    example_request:
+      query:
+        base: USD
+        symbols: EUR,GBP,JPY
+    pitfalls:
+      - "base and symbols use ISO 4217 codes; unknown codes return 404"
+      - "rates update once per working day around 16:00 CET; weekends repeat Friday"
+  - method: GET
+    path: /v1/2024-01-02
+    summary: Historical rates for a single date (path is /v1/YYYY-MM-DD).
+    price_usd: "0.001"
+    example_request:
+      query:
+        base: USD
+        symbols: EUR
+    pitfalls:
+      - "the path segment must be an ISO date YYYY-MM-DD; non-business days snap to the previous quote"
+      - "data starts 1999-01-04; earlier dates return the earliest available quote"
+  - method: GET
+    path: /v1/2024-01-01..2024-01-31
+    summary: Time series of rates across a date range (/v1/START..END).
+    price_usd: "0.002"
+    example_request:
+      query:
+        base: USD
+        symbols: EUR
+    pitfalls:
+      - "range paths use two dots between ISO dates: START..END"
+      - "large ranges return many rows; keep symbols narrow to bound the response"
+categories: [finance, data]
+tags: [forex, exchange-rates, currency, ecb, frankfurter]

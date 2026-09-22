@@ -1,0 +1,36 @@
+# Render Blueprint for the Frankfurter FX x402 service.
+#
+# Usage:
+#   1. Push this service to a GitHub repo you own (see DEPLOY_RENDER.md).
+#   2. In the Render dashboard: New + -> Blueprint -> pick that repo.
+#      Render reads this file and creates the web service below.
+#   3. Fill PAY_TO (sync:false means Render prompts you; it is not stored here).
+#   4. After the first deploy Render shows the public URL, e.g.
+#      https://frankfurter-fx.onrender.com  -> that is your base_url.
+#
+# If this service lives inside the kite-x402-services repo layout, keep
+# rootDir pointing at the service directory. If you push ONLY this service
+# directory as the repo root, delete the rootDir line.
+
+services:
+  - type: web
+    name: frankfurter-fx
+    runtime: node
+    plan: free
+    rootDir: services/frankfurter-fx
+    buildCommand: npm install && npm run build
+    startCommand: node dist/index.js
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: PAY_TO
+        sync: false            # set to your Kite wallet in the Render UI
+      - key: KITE_NETWORK
+        value: mainnet         # mainnet (USDC.e) | testnet (pieUSD)
+      - key: UPSTREAM_URL
+        value: https://api.frankfurter.dev
+      - key: PRICE_USD
+        value: "0.001"
+      - key: SERVICE_DESCRIPTION
+        value: Frankfurter ECB foreign-exchange rates behind x402 on Kite
+      # PORT is provided by Render automatically; the app reads process.env.PORT.
