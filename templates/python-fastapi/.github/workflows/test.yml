@@ -1,0 +1,46 @@
+name: test
+on:
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.14"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install just
+        uses: extractions/setup-just@v2
+      - name: Install dependencies
+        run: just install
+      - name: Module import check
+        run: |
+          python3 -c "
+          import sys; sys.path.insert(0, '.')
+          from kite import KITE_MAINNET, KITE_TESTNET, kite_money_parser, kite_network
+          from x402.schemas import AssetAmount
+          chain = kite_network('testnet')
+          amt = kite_money_parser()(0.001, chain.network)
+          assert isinstance(amt, AssetAmount), 'Expected AssetAmount, got %s' % type(amt)
+          assert int(amt.amount) > 0
+          print('Kite testnet: %s  asset: %s  $0.001 -> %s atoms' % (chain.network, chain.asset_symbol, amt.amount))
+          print('Import OK')
+          "
+      - name: Server module load
+        run: |
+          python3 -c "
+          import sys; sys.path.insert(0, '.')
+          import os
+          os.environ['PAY_TO'] = '0x0000000000000000000000000000000000000000'
+          os.environ['UPSTREAM_URL'] = 'https://api.open-meteo.com'
+          os.environ['KITE_NETWORK'] = 'testnet'
+          os.environ['PRICE_USD'] = '0.001'
+          from server import app
+          print('Server app loaded: %s' % app.title)
+          "
