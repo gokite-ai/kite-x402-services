@@ -1,0 +1,37 @@
+name: lint
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.14"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install just
+        uses: extractions/setup-just@v2
+      - name: Install dependencies
+        run: just install
+      - name: Ruff check
+        run: just lint
+      - name: Ruff format check
+        run: |
+          cat > /tmp/ruff_format_check.py << 'EOF'
+          import subprocess, sys
+          r = subprocess.run(["ruff", "format", "--check", "."], capture_output=True, text=True)
+          if r.returncode != 0:
+              print(r.stdout)
+              print(r.stderr)
+              sys.exit(r.returncode)
+          print("Format OK")
+          EOF
+          python3 /tmp/ruff_format_check.py

@@ -39,6 +39,7 @@ Pick a template:
 |---|---|---|
 | [`templates/typescript-express`](templates/typescript-express) | Node 22, Express 5, `@x402/express` | `npm install && npm run dev` |
 | [`templates/go-gin`](templates/go-gin) | Go 1.25, Gin, `github.com/coinbase/x402/go` | `go run .` |
+| [`templates/python-fastapi`](templates/python-fastapi) | Python 3.14, FastAPI, `x402[fastapi]` | `just install && just run` |
 
 Both read the same environment variables:
 
@@ -157,9 +158,11 @@ to touch those files.
 ```
 templates/typescript-express   Express wrapper template
 templates/go-gin               Gin wrapper template
+templates/python-fastapi       FastAPI (Python) wrapper template
 services/<name>/               one deployed wrapper per directory + service.yaml
 schema/service.schema.json     manifest schema (validated in CI)
-scripts/validate.mjs           `npm run validate`
+scripts/validate.mjs           `npm run validate` (Node.js)
+scripts/validate.py            `just validate` (Python)
 ```
 
 ## License

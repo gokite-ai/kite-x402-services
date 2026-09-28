@@ -1,0 +1,11 @@
+[default]
+extend-ignore-re = [
+    # Python identifiers that look like typos but are correct
+    "\\bserde\\b",
+    "\\buvicorn\\b",
+    "\\bhttpx\\b",
+    "\\bpydantic\\b",
+    "\\bpieUSD\\b",
+    "\\bpieverse\\b",
+    "\\bmonorepo\\b",
+]

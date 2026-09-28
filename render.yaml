@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: kite-python-weather
+    env: python
+    region: singapore
+    plan: free
+    buildCommand: pip install -r templates/python-fastapi/requirements.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
+    workingDirectory: templates/python-fastapi
+    envVars:
+      - key: KITE_NETWORK
+        value: testnet
+      - key: PRICE_USD
+        value: "0.001"
+      - key: UPSTREAM_URL
+        value: https://api.open-meteo.com
+      - key: PAY_TO
+        sync: false
