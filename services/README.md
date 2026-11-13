@@ -9,6 +9,7 @@ One directory per wrapped API. Each directory contains:
 | Service | Status | Network | Endpoints | Maintainer |
 |---|---|---|---|---|
 | [open-meteo-weather](open-meteo-weather) | draft | eip155:2366 | `GET /v1/forecast` | @lienhage |
+| [lelang-bid-integrity](lelang-bid-integrity) | draft | eip155:2368 | `POST /v1/inspect` | @PugarHuda |
 
 Add a row when you add a service. `status` meanings: `draft` = code only,
 `testnet` = deployed and charging pieUSD on Kite testnet, `live` = deployed and
